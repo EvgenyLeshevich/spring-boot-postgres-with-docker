@@ -1,0 +1,27 @@
+version: '1'
+
+services:
+  db:
+    container_name: db
+    image: postgres:14.2-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=test_db
+      - POSTGRES_PASSWORD=evg
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+  app:
+    container_name: app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db/test_db
+      - JS_URL=http://localhost
+    image: 'application'
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
